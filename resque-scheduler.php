@@ -1,13 +1,33 @@
 <?php
 
-// Look for an environment variable with 
-$RESQUE_PHP = getenv('RESQUE_PHP');
-if (!empty($RESQUE_PHP)) {
-	require_once $RESQUE_PHP;
+// Load the user's application if one exists
+$APP_INCLUDE = getenv('APP_INCLUDE');
+if($APP_INCLUDE) {
+	if(!file_exists($APP_INCLUDE)) {
+		die('APP_INCLUDE ('.$APP_INCLUDE.") does not exist.\n");
+	}
+
+	require_once $APP_INCLUDE;
 }
-// Otherwise, if we have no Resque then assume it is in the include path
-else if (!class_exists('Resque')) {
-	require_once 'Resque/Resque.php';
+
+// Look for an environment resque class
+$RESQUE_CLASS = getenv('RESQUE_CLASS');
+if(!empty($RESQUE_CLASS)) {
+	/** @var Resque $resqueClass */
+	$resqueClass = new $RESQUE_CLASS();
+} else {
+	// Look for an environment variable with
+	$RESQUE_PHP = getenv('RESQUE_PHP');
+	if (!empty($RESQUE_PHP)) {
+		require_once $RESQUE_PHP;
+	}
+	// Otherwise, if we have no Resque then assume it is in the include path
+	else if (!class_exists('Resque')) {
+		require_once 'Resque/Resque.php';
+	}
+
+	/** @var Resque $resqueClass */
+	$resqueClass = new Resque;
 }
 
 // Load resque-scheduler
@@ -17,10 +37,10 @@ require_once dirname(__FILE__) . '/lib/ResqueScheduler/Worker.php';
 $REDIS_BACKEND = getenv('REDIS_BACKEND');
 $REDIS_BACKEND_DB = getenv('REDIS_BACKEND_DB');
 if(!empty($REDIS_BACKEND)) {
-	if (empty($REDIS_BACKEND_DB)) 
-		Resque::setBackend($REDIS_BACKEND);
+	if (empty($REDIS_BACKEND_DB))
+		$resqueClass::setBackend($REDIS_BACKEND);
 	else
-		Resque::setBackend($REDIS_BACKEND, $REDIS_BACKEND_DB);
+		$resqueClass::setBackend($REDIS_BACKEND, $REDIS_BACKEND_DB);
 }
 
 // Set log level for resque-scheduler
@@ -42,23 +62,13 @@ if(!empty($INTERVAL)) {
 	$interval = $INTERVAL;
 }
 
-// Load the user's application if one exists
-$APP_INCLUDE = getenv('APP_INCLUDE');
-if($APP_INCLUDE) {
-	if(!file_exists($APP_INCLUDE)) {
-		die('APP_INCLUDE ('.$APP_INCLUDE.") does not exist.\n");
-	}
-
-	require_once $APP_INCLUDE;
-}
-
 $PREFIX = getenv('PREFIX');
 if(!empty($PREFIX)) {
     fwrite(STDOUT, '*** Prefix set to '.$PREFIX."\n");
     Resque_Redis::prefix($PREFIX);
 }
 
-$worker = new ResqueScheduler_Worker();
+$worker = new ResqueScheduler_Worker($resqueClass);
 $worker->logLevel = $logLevel;
 
 $PIDFILE = getenv('PIDFILE');

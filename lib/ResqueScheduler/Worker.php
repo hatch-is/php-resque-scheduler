@@ -12,8 +12,15 @@ class ResqueScheduler_Worker
 	const LOG_NONE = 0;
 	const LOG_NORMAL = 1;
 	const LOG_VERBOSE = 2;
-	
-	/**
+
+	protected $resqueClass;
+
+    public function __construct($resqueClass)
+    {
+        $this->resqueClass = $resqueClass;
+    }
+
+    /**
 	 * @var int Current log level of this worker.
 	 */
 	public $logLevel = 0;
@@ -82,7 +89,7 @@ class ResqueScheduler_Worker
 			));
 
 			$payload = array_merge(array($item['queue'], $item['class']), $item['args']);
-			call_user_func_array('Resque::enqueue', $payload);
+			call_user_func_array($this->resqueClass.'::enqueue', $payload);
 		}
 	}
 	
