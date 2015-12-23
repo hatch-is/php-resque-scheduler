@@ -65,6 +65,7 @@ A basic "up-and-running" resque-scheduler.php file is included that sets up a
 running worker environment is included in the root directory. It accepts many
 of the same environment variables as php-resque:
 
+* `RESQUE_CLASS` - Resque class to work with
 * `REDIS_BACKEND` - Redis server to connect to
 * `LOGGING` - Enable logging to STDOUT
 * `VERBOSE` - Enable verbose logging
