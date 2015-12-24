@@ -22,13 +22,13 @@ class ResqueScheduler
     }
 
     /**
-     * @param Resque $resqueClass
+     * @param mixed $resqueClass
      */
     public static function setResqueClass($resqueClass)
     {
         self::$resqueClass = $resqueClass;
     }
-	
+
 	/**
 	 * Enqueue a job in a given number of seconds from now.
 	 *
@@ -63,7 +63,7 @@ class ResqueScheduler
 
 		$job = self::jobToHash($queue, $class, $args);
 		self::delayedPush($at, $job);
-		
+
 		Resque_Event::trigger('afterSchedule', array(
 			'at'    => $at,
 			'queue' => $queue,
@@ -169,7 +169,7 @@ class ResqueScheduler
 
         return $count;
     }
-	
+
 	/**
 	 * Generate hash of all job properties to be saved in the scheduled queue.
 	 *
@@ -220,7 +220,7 @@ class ResqueScheduler
 		if ($timestamp instanceof DateTime) {
 			$timestamp = $timestamp->getTimestamp();
 		}
-		
+
 		if ((int)$timestamp != $timestamp) {
 			throw new ResqueScheduler_InvalidTimestampException(
 				'The supplied timestamp value could not be converted to an integer.'
@@ -256,10 +256,10 @@ class ResqueScheduler
 		if (!empty($items)) {
 			return $items[0];
 		}
-		
+
 		return false;
-	}	
-	
+	}
+
 	/**
 	 * Pop a job off the delayed queue for a given timestamp.
 	 *
@@ -273,7 +273,7 @@ class ResqueScheduler
 
         $resqueClass = self::getResqueClass();
 		$item = json_decode($resqueClass::redis()->lpop($key), true);
-		
+
 		self::cleanupTimestamp($key, $timestamp);
 		return $item;
 	}
@@ -293,7 +293,7 @@ class ResqueScheduler
 		else if (empty($queue)) {
 			throw new Resque_Exception('Jobs must be put in a queue.');
 		}
-		
+
 		return true;
 	}
 }

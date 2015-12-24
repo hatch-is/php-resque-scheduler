@@ -14,7 +14,7 @@ if($APP_INCLUDE) {
 $RESQUE_CLASS = getenv('RESQUE_CLASS');
 if(!empty($RESQUE_CLASS)) {
 	/** @var Resque $resqueClass */
-	$resqueClass = new $RESQUE_CLASS();
+	$resqueClass = $RESQUE_CLASS;
 } else {
 	// Look for an environment variable with
 	$RESQUE_PHP = getenv('RESQUE_PHP');
@@ -27,7 +27,7 @@ if(!empty($RESQUE_CLASS)) {
 	}
 
 	/** @var Resque $resqueClass */
-	$resqueClass = new Resque;
+	$resqueClass = 'Resque';
 }
 
 // Load resque-scheduler
