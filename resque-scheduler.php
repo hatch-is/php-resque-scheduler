@@ -23,7 +23,7 @@ if(!empty($RESQUE_CLASS)) {
 	}
 	// Otherwise, if we have no Resque then assume it is in the include path
 	else if (!class_exists('Resque')) {
-		require_once 'Resque/Resque.php';
+		throw new \Exception("There is no Resque class to work with");
 	}
 
 	/** @var Resque $resqueClass */
