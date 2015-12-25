@@ -55,8 +55,8 @@ if(!empty($RESQUE_CLASS)) {
 }
 
 // Load resque-scheduler
-require_once dirname(__FILE__) . '/lib/ResqueScheduler.php';
-require_once dirname(__FILE__) . '/lib/ResqueScheduler/Worker.php';
+require_once dirname(__FILE__) . '../lib/ResqueScheduler.php';
+require_once dirname(__FILE__) . '../lib/ResqueScheduler/Worker.php';
 
 $REDIS_BACKEND = getenv('REDIS_BACKEND');
 $REDIS_BACKEND_DB = getenv('REDIS_BACKEND_DB');
