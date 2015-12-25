@@ -1,5 +1,20 @@
 <?php
 
+// Find and initialize Composer
+$files = array(
+    __DIR__ . '/../../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+    __DIR__ . '/../../../../autoload.php',
+    __DIR__ . '/../vendor/autoload.php',
+);
+
+foreach ($files as $file) {
+    if (file_exists($file)) {
+        require_once $file;
+        break;
+    }
+}
+
 // Load the user's application if one exists
 $APP_INCLUDE = getenv('APP_INCLUDE');
 if($APP_INCLUDE) {
