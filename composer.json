@@ -12,5 +12,8 @@
 		"psr-0": {
 			"ResqueScheduler": "lib/"
 		}
-	}
+	},
+	"bin": [
+		"bin/resque-scheduler"
+	]
 }
