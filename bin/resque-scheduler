@@ -59,12 +59,14 @@ require_once dirname(__FILE__) . '/../lib/ResqueScheduler.php';
 require_once dirname(__FILE__) . '/../lib/ResqueScheduler/Worker.php';
 
 $REDIS_BACKEND = getenv('REDIS_BACKEND');
-$REDIS_BACKEND_DB = getenv('REDIS_BACKEND_DB');
+$REDIS_BACKEND_DB = getenv('REDIS_BACKEND_DB') == '' ? 0 : getenv('REDIS_BACKEND_DB');
+$REDIS_NAMESPACE = getenv('REDIS_NAMESPACE') == '' ? 'resque' : getenv('REDIS_NAMESPACE');
+$REDIS_PASSWORD = getenv('REDIS_PASSWORD') == '' ? null : getenv('REDIS_PASSWORD');
+
 if(!empty($REDIS_BACKEND)) {
-	if (empty($REDIS_BACKEND_DB))
-		$resqueClass::setBackend($REDIS_BACKEND);
-	else
-		$resqueClass::setBackend($REDIS_BACKEND, $REDIS_BACKEND_DB);
+	$resqueClass::setBackend(
+		$REDIS_BACKEND, $REDIS_BACKEND_DB, $REDIS_NAMESPACE, $REDIS_PASSWORD
+	);
 }
 
 // Set log level for resque-scheduler
